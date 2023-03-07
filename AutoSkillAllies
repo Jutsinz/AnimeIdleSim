@@ -57,7 +57,7 @@ Tab:AddButton({
         for _,blz in pairs(game.Lighting:children()) do
             if blz:IsA('BlurEffect') then
                 blz:remove()
-                game:GetService("Players").Jutsinz.PlayerGui.Feedback.Verification.MainFrame:Destroy()
+                game:GetService("Players").LocalPlayer.PlayerGui.Feedback.Verification.MainFrame:Destroy()
             end
         end
   	end

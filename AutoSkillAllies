@@ -187,45 +187,6 @@ Tab:AddToggle({
 })
 
 Tab5:AddToggle({
-	Name = "Auto Claim Daily Rewards",
-	Default = false,
-    Save = true,
-    Flag = "Daily",
-	Callback = function(Value)
-        Claim = Value
-        if Claim then
-            pcall(function ()
-                while Claim and task.wait(5) do
-                    local numrewards = {1,2,3,4,5,6,7,8,9,10}
-                    for i, rewards in ipairs(numrewards) do
-                        local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Rewards;
-                        Target:FireServer("ClaimPlaytimeewardR", rewards);
-                    end
-                end
-            end)
-        end
-    end
-})
-
--- Tab5:AddToggle({
---     Name = "Auto Daily Spin",
---     Default = false,
---     Save = true,
---     Flag = "Spin",
---     Callback = function(Value)
---         Spin = Value
---         if Spin then
---             pcall(function ()
---                 while Spin and task.wait(15) do
-                    
---                 end
-                
---             end)
---         end
---     end
--- })
-
-Tab5:AddToggle({
 	Name = "Auto Server Boss Hop",
 	Default = false,
     Save = true,

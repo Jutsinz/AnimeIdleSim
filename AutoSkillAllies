@@ -10,7 +10,6 @@ game:GetService("Players").LocalPlayer.Idled:Connect(
 )
 
 local nameOfGame = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
-local Mob = game:GetService("Workspace").Game.PlayerIslands.Jutsinz.spawnedAllies
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 

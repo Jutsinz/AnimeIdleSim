@@ -66,8 +66,6 @@ Tab:AddButton({
 Tab:AddDropdown({
 	Name = "Select Upgrade Ally 1",
 	Default = "",
-    Save = true,
-    Flag = "UpgradeFirst",
 	Options = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24},
 	Callback = function(Value)
 		First = Value
@@ -77,8 +75,6 @@ Tab:AddDropdown({
 Tab:AddDropdown({
 	Name = "Select Upgrade Ally 2",
 	Default = "",
-    Save = true,
-    Flag = "UpgradeSecond",
 	Options = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24},
 	Callback = function(Value)
 		Second = Value
@@ -88,8 +84,6 @@ Tab:AddDropdown({
 Tab:AddDropdown({
 	Name = "Select Upgrade Ally 3",
 	Default = "",
-    Save = true,
-    Flag = "UpgradeThird",
 	Options = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24},
 	Callback = function(Value)
 		Third = Value
@@ -100,8 +94,6 @@ Tab:AddDropdown({
 	Name = "Select Upgrade Levels",
 	Default = "",
 	Options = {1,10,25,100},
-    Save = true,
-    Flag = "LVLS",
 	Callback = function(Value)
 		UPamount = Value
 	end    
@@ -110,8 +102,6 @@ Tab:AddDropdown({
 Tab:AddToggle({
 	Name = "Upgrade Selected",
 	Default = false,
-    Save = true,
-    Flag = "Upgradeonoroff",
 	Callback = function(Value)
         UPgraded = Value
         if UPgraded then
@@ -180,6 +170,26 @@ Tab:AddToggle({
                     local args = {[1] = "Hire"}
                     game:GetService("ReplicatedStorage")._GAME._MODULES.Utilities.NetworkUtility.Events.Allies:FireServer(unpack(args))
                     task.wait(1)
+                end
+            end)
+        end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Teleport To Mob Range",
+	Default = false,
+    Save = true,
+    Flag = "MobRange",
+	Callback = function(Value)
+        UP = Value
+        if UP then
+            pcall(function ()
+                while UP and task.wait() do
+                    local wave = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Up.Level.Label
+                    if wave.Text >= "Level 59" or wave.Text >= "Level 59 Completed!" then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Game.PlayerIslands.Jutsinz.Spawns.MobTargetPosition.CFrame
+                    end
                 end
             end)
         end

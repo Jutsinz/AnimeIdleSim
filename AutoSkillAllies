@@ -11,879 +11,246 @@ game:GetService("Players").LocalPlayer.Idled:Connect(
 
 local nameOfGame = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
 
-local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/rg9JaJg4')))()
+local SolarisLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/sol"))()
 
-local Window = OrionLib:MakeWindow({Name = nameOfGame.Name, HidePremium = false, SaveConfig = true, ConfigFolder = "DoesItWork"})
+local win = SolarisLib:New({
+    Name = nameOfGame.Name,
+    FolderToSave = "doesitwork"
+  })
 
-local Tab = Window:MakeTab({
-	Name = "Auto Things",
-	Icon = "",
-	PremiumOnly = false
-})
+local Tab = win:Tab("Auto Things")
 
-local Tab4 = Window:MakeTab({
-	Name = "Auto",
-	Icon = "",
-	PremiumOnly = false
-})
+local Tab4 = win:Tab(
+"Auto Upgrade Skills"
+)
 
-local Tab1 = Window:MakeTab({
-	Name = "All",
-	Icon = "",
-	PremiumOnly = false
-})
+local Tab5 = win:Tab(
+"Misc"
+)
 
-local Tab2 = Window:MakeTab({
-	Name = "The",
-	Icon = "",
-	PremiumOnly = false
-})
+local sec = Tab:Section("Remove Pop UP")
 
-local Tab3 = Window:MakeTab({
-	Name = "Skills",
-	Icon = "",
-	PremiumOnly = false
-})
-
-local Tab5 = Window:MakeTab({
-	Name = "Misc",
-	Icon = "",
-	PremiumOnly = false
-})
-
-Tab:AddButton({
-	Name = "Remove Uh Oh Menu",
-	Callback = function()
-        for _,blz in pairs(game.Lighting:children()) do
-            if blz:IsA('BlurEffect') then
-                blz:remove()
-                game:GetService("Players").Jutsinz.PlayerGui.Feedback.Verification.MainFrame:Destroy()
-            end
+sec:Button("Disable Uh oh Menu and Blur", function()
+    for _,blz in pairs(game.Lighting:children()) do
+        if blz:IsA('BlurEffect') then
+            blz:remove()
+            game:GetService("Players").Jutsinz.PlayerGui.Feedback.Verification.MainFrame:Destroy()
         end
-  	end
-})
+    end
+  end)
 
-Tab:AddDropdown({
-	Name = "Select Upgrade Ally 1",
-	Default = "",
-	Options = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24},
-	Callback = function(Value)
-		First = Value
-	end    
-})
+local sec = Tab:Section("Auto Ally Upgrade")
 
-Tab:AddDropdown({
-	Name = "Select Upgrade Ally 2",
-	Default = "",
-	Options = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24},
-	Callback = function(Value)
-		Second = Value
-	end    
-})
+local multidropdown =sec:MultiDropdown("Select Allies to Upgrade", {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24},{},"DropdownAllies", function(t)
+    First = t
+  end)
 
-Tab:AddDropdown({
-	Name = "Select Upgrade Ally 3",
-	Default = "",
-	Options = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24},
-	Callback = function(Value)
-		Third = Value
-	end    
-})
+  local dropdown = sec:Dropdown("Upgrade Amount", {1,10,25,100},"","Dropdownamount", function(t)
+    UPamount = t
+  end)
 
-Tab:AddDropdown({
-	Name = "Select Upgrade Levels",
-	Default = "",
-	Options = {1,10,25,100},
-	Callback = function(Value)
-		UPamount = Value
-	end    
-})
-
-Tab:AddToggle({
-	Name = "Upgrade Selected",
-	Default = false,
-	Callback = function(Value)
-        UPgraded = Value
-        if UPgraded then
-            pcall(function ()
-                while UPgraded and task.wait(1) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer("Upgrade", First, UPamount);
-                    Target:FireServer("Upgrade", Second, UPamount);
-                    Target:FireServer("Upgrade", Third, UPamount);
+  local toggle = sec:Toggle("Upgrade Selected", false,"TSelect", function(t)
+    UPgraded = t
+    if UPgraded then
+        pcall(function ()
+            while UPgraded and task.wait(1) do
+                for _, select in ipairs(First) do
+                local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
+                Target:FireServer("Upgrade", select, UPamount);
                 end
-            end)
-        end
-	end    
-})
+            end
+        end)
+    end
+end)
 
 local AllAlly = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24}
 
-Tab:AddToggle({
-	Name = "Upgrade All",
-	Default = false,
-    Save = true,
-    Flag = "UpgradeAll",
-	Callback = function(Value)
-        UPgraded = Value
-        if UPgraded then
-            pcall(function ()
-                while UPgraded and task.wait(1) do
-                    for i, All in ipairs(AllAlly) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer("Upgrade", All, UPamount);
-                    end
+local toggle = sec:Toggle("Upgrade Everyone", false,"TEveryone", function(t)
+    UPgraded = t
+    if UPgraded then
+        pcall(function ()
+            while UPgraded and task.wait(1) do
+                for i, All in ipairs(AllAlly) do
+                local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
+                Target:FireServer("Upgrade", All, UPamount);
                 end
-            end)
-        end
-	end    
-})
+            end
+        end)
+    end
+end)
 
-Tab:AddToggle({
-	Name = "Auto Reincarnate",
-	Default = false,
-    Save = true,
-    Flag = "Rebirth",
-	Callback = function(Value)
-        Ren = Value
-        if Ren then
-            pcall(function ()
-                while Ren do
-                    game:GetService("ReplicatedStorage")._GAME._MODULES.Utilities.NetworkUtility.Events.Reincarnate:FireServer()
-                    task.wait(5)
+local sec = Tab:Section("Useful Autos")
+
+local toggle = sec:Toggle("Auto Reincarnate", false,"rebirth", function(t)
+    Ren = t
+    if Ren then
+        pcall(function ()
+            while Ren do
+                game:GetService("ReplicatedStorage")._GAME._MODULES.Utilities.NetworkUtility.Events.Reincarnate:FireServer()
+                task.wait(5)
+            end
+        end)
+    end
+end)
+
+local toggle = sec:Toggle("Auto Hire", false,"Hire", function(t)
+    Hire = t
+    if Hire then
+        pcall(function ()
+            while Hire do
+                local args = {[1] = "Hire"}
+                game:GetService("ReplicatedStorage")._GAME._MODULES.Utilities.NetworkUtility.Events.Allies:FireServer(unpack(args))
+                task.wait(1)
+            end
+        end)
+    end
+end)
+
+local toggle = sec:Toggle("TP To Mob", false,"tpmob", function(t)
+    UP = t
+    if UP then
+        pcall(function ()
+            while UP and task.wait() do
+                local wave = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Up.Level.Label
+                if wave.Text >= "Level 59" or wave.Text >= "Level 49" or wave.Text >= "Level 69" or wave.Text >= "Level 79" or wave.Text >= "Level 89" then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Game.PlayerIslands.LocalPlayer.Spawns.MobTargetPosition.CFrame * CFrame.new(3,3,3)
                 end
-            end)
-        end
-	end    
-})
+            end
+        end)
+    end
+end)
 
-Tab:AddToggle({
-	Name = "Auto Hire",
-	Default = false,
-    Save = true,
-    Flag = "Hire",
-	Callback = function(Value)
-        Hire = Value
-        if Hire then
-            pcall(function ()
-                while Hire do
-                    local args = {[1] = "Hire"}
-                    game:GetService("ReplicatedStorage")._GAME._MODULES.Utilities.NetworkUtility.Events.Allies:FireServer(unpack(args))
-                    task.wait(1)
+local sec1 = Tab5:Section("Auto Boss")
+
+local toggle = sec1:Toggle("Auto Server Boss", false,"Sboss", function(t)
+    Sboss = Value
+    if Sboss then
+        spawn(function ()
+            while Sboss and task.wait(5) do
+            local time = game:GetService("Workspace").MainIsland.BossGate.InterfacePart.Interface.SpawnTime
+            if time.Text <= "BOSS SPAWNED!" then
+                local player = game.Players.LocalPlayer.Character.HumanoidRootPart
+                player.CFrame = game:GetService("Workspace").MainIsland.BossGate.Platform["Meshes/Portal_Cylinder base 2"].CFrame
                 end
-            end)
-        end
-	end    
-})
+            end
+        end)
+    end
+end)
 
-Tab:AddToggle({
-	Name = "Teleport To Mob Range",
-	Default = false,
-    Save = true,
-    Flag = "MobRange",
-	Callback = function(Value)
-        UP = Value
-        if UP then
-            pcall(function ()
-                while UP and task.wait() do
-                    local wave = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Up.Level.Label
-                    if wave.Text >= "Level 59" or wave.Text >= "Level 59 Completed!" then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Game.PlayerIslands.Jutsinz.Spawns.MobTargetPosition.CFrame
-                    end
-                end
-            end)
-        end
-	end    
-})
+local sec2 = Tab4:Section("Auto Allies Skills")
 
-Tab5:AddToggle({
-	Name = "Auto Server Boss",
-	Default = false,
-    Save = true,
-    Flag = "ServerBoss",
-	Callback = function(Value)
-        Sboss = Value
-        if Sboss then
-            spawn(function ()
-                while Sboss and task.wait(5) do
-                local time = game:GetService("Workspace").MainIsland.BossGate.InterfacePart.Interface.SpawnTime
-                if time.Text <= "BOSS SPAWNED!" then
-                    local player = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    player.CFrame = game:GetService("Workspace").MainIsland.BossGate.Platform["Meshes/Portal_Cylinder base 2"].CFrame
-                    end
-                end
-            end)
-        end
-	end    
-})
-
-Tab5:AddToggle({
-	Name = "Auto Server Boss Hop",
-	Default = false,
-    Save = true,
-    Flag = "BossHop",
-	Callback = function(Value)
-        Hire = Value
-        if Hire then
-            spawn(function ()
-                while Hire and task.wait(20) do
-                    local Player = game.Players.LocalPlayer    
-                    local Http = game:GetService("HttpService")
-                    local TPS = game:GetService("TeleportService")
-                    local Api = "https://games.roblox.com/v1/games/"
-                    local PlaceId = game.PlaceId
-                    local HitFolder = game:GetService("Workspace").Game.Hits
-                    local ModelNames = {"Ultimate Baros", "Meroem", "Joren", "Katakuro", "Kakuzo", "Shigarako", "Kokushiba"}
-                    
-                    local function ServerHop()
-                        local _id = game.JobId
-                        local _servers = Api .. PlaceId .. "/servers/Public?sortOrder=Desc&limit=100"
-                        local function ListServers(cursor)
-                            local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
-                            return Http:JSONDecode(Raw)
-                        end
-                        local Next
-                        repeat
-                            local Servers = ListServers(Next)
-                            for i,v in next, Servers.data do
-                                if v.playing < v.maxPlayers and v.id ~= _id then
-                                    local s, r = pcall(TPS.TeleportToPlaceInstance, TPS, PlaceId, v.id, Player)
-                                    if s then break end
-                                end
-                            end
-                            Next = Servers.nextPageCursor
-                        until not Next
-                    end
-                    
-                    local function TeleportToModel(Model)
-                        local ModelFound = false
-                        local MeshPart = game:GetService("Workspace").MainIsland.BossGate.Platform["Meshes/Portal_Cylinder base 2"]
-                        if MeshPart then
-                            Player.Character.HumanoidRootPart.CFrame = MeshPart.CFrame
-                            wait(1)
-                            for _, Descendant in ipairs(HitFolder:GetDescendants()) do
-                                if Descendant:IsA("Model") and Descendant.Name == Model then
-                                    local HumanoidRootPart = Descendant:FindFirstChild("HumanoidRootPart")
-                                    if HumanoidRootPart then
-                                        Player.Character.HumanoidRootPart.CFrame = HumanoidRootPart.CFrame
-                                        ModelFound = true
-                                        break
-                                    
-                                    end
-                                end
-                            end
-                        end
-                        if not ModelFound then
-                            task.wait(15)
-                            ServerHop()
-                      end
-                    end
-                    Player.CharacterAdded:Connect(function(Character)
-                        for _, ModelName in ipairs(ModelNames) do
-                            TeleportToModel(ModelName)
-                        end
-                    end)
-                    
-                    if Player.Character then
-                        for _, ModelName in ipairs(ModelNames) do
-                            TeleportToModel(ModelName)
-                        end
-                    end
-                end
-            end)
-        end
-	end    
-})
-
-
-
-Tab4:AddToggle({
-	Name = "Naruto",
-	Default = false,
-    Save = true,
-    Flag = "Naruto",
-	Callback = function(Value)
-        naruto = Value
-        if naruto then
-            pcall(function ()
-                while naruto and task.wait(3) do 
-                    local string_1 = "LearnSkill";
-                    local number_1 = 1;
-                    local string_2 = "Shadow clone";
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer(string_1, number_1, string_2);
-                    task.wait()
-                    local string_1 = "LearnSkill";
-                    local number_1 = 1;
-                    local string_2 = "Six Paths Mode";
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer(string_1, number_1, string_2);
-                    task.wait()
-                    local string_1 = "LearnSkill";
-                    local number_1 = 1;
-                    local string_2 = "Rasengan";
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer(string_1, number_1, string_2);
-                    task.wait()
-                    local string_1 = "LearnSkill";
-                    local number_1 = 1;
-                    local string_2 = "Rasenshuriken";
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer(string_1, number_1, string_2);
-                    task.wait()
-                    local string_1 = "LearnSkill";
-                    local number_1 = 1;
-                    local string_2 = "Sage Mode";
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer(string_1, number_1, string_2);
-                    task.wait()
-                    local string_1 = "LearnSkill";
-                    local number_1 = 1;
-                    local string_2 = "Baryon Mode";
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
-                    Target:FireServer(string_1, number_1, string_2);
-                    task.wait()
-                    
-                end   
-            end)
-        end
-	end    
-})
-
-Tab4:AddToggle({
-	Name = "Sasuke",
-	Default = false,
-    Save = true,
-    Flag = "Sasuke",
-	Callback = function(Value)
-        sas = Value
-        if sas then
-            pcall(function ()
-                while sas and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 2, "Sharigan")
-                    Target:FireServer("LearnSkill", 2, "Chidori")
-                    Target:FireServer("LearnSkill", 2, "Kirin")
-                    Target:FireServer("LearnSkill", 2, "Amaterasu")
-                    Target:FireServer("LearnSkill", 2, "Indra Mode")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab4:AddToggle({
-	Name = "Minato",
-	Default = false,
-    Save = true,
-    Flag = "Minato",
-	Callback = function(Value)
-        min = Value
-        if min then
-            pcall(function ()
-                while min and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 3, "Sage Mode")
-                    Target:FireServer("LearnSkill", 3, "Ultimate Rasengan")
-                    Target:FireServer("LearnSkill", 3, "Spiraling Flash")
-                    Target:FireServer("LearnSkill", 3, "Flying Raijin")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab4:AddToggle({
-	Name = "Kakashi",
-	Default = false,
-    Save = true,
-    Flag = "Kakashi",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 4, "Copy Cat")
-                    Target:FireServer("LearnSkill", 4, "Susanoo")
-                    Target:FireServer("LearnSkill", 4, "Kamui")
-                    Target:FireServer("LearnSkill", 4, "Raikiri")
-                   
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab4:AddToggle({
-	Name = "Luffy",
-	Default = false,
-    Save = true,
-    Flag = "Luffy",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 5, "Pistol")
-                    Target:FireServer("LearnSkill", 5, "Bazooka")
-                    Target:FireServer("LearnSkill", 5, "Gatling")
-                    Target:FireServer("LearnSkill", 5, "Red Hawk")
-                   
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab4:AddToggle({
-	Name = "Zoro",
-	Default = false,
-    Save = true,
-    Flag = "Zoro",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 6, "Rapid Slashes")
-                    Target:FireServer("LearnSkill", 6, "Dragon Blaze")
-                    Target:FireServer("LearnSkill", 6, "Pound Phoenix")
-                    Target:FireServer("LearnSkill", 6, "Dragon Twister")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab1:AddToggle({
-	Name = "Sanji",
-	Default = false,
-    Save = true,
-    Flag = "Sanji",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 7, "Diable Kick")
-                    Target:FireServer("LearnSkill", 7, "Grill Shot")
-                    Target:FireServer("LearnSkill", 7, "Spectre")
-                    Target:FireServer("LearnSkill", 7, "Aerial Kick")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab1:AddToggle({
-	Name = "Shanks",
-	Default = false,
-    Save = true,
-    Flag = "Shanks",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 8, "Swordsmanship")
-                    Target:FireServer("LearnSkill", 8, "Stealth Master")
-                    Target:FireServer("LearnSkill", 8, "Double Strike")
-                    Target:FireServer("LearnSkill", 8, "Crimson Blade")
-                    Target:FireServer("LearnSkill", 8, "Haki")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab1:AddToggle({
-	Name = "Goku",
-	Default = false,
-    Save = true,
-    Flag = "Goku",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 9, "Solar Flare")
-                    Target:FireServer("LearnSkill", 9, "Kamehameha")
-                    Target:FireServer("LearnSkill", 9, "Dragon Fist")
-                    Target:FireServer("LearnSkill", 9, "Spirit Bomb")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab1:AddToggle({
-	Name = "Vegita",
-	Default = false,
-    Save = true,
-    Flag = "Vegita",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 10, "Big Bang Attack")
-                    Target:FireServer("LearnSkill", 10, "Final Flash")
-                    Target:FireServer("LearnSkill", 10, "Galaxy Breaker")
-                    Target:FireServer("LearnSkill", 10, "Final Impact")
-                    Target:FireServer("LearnSkill", 10, "Galick Gun")
-                   
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab1:AddToggle({
-	Name = "Piccolo",
-	Default = false,
-    Save = true,
-    Flag = "Piccolo",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 11, "Scatter Shot")
-                    Target:FireServer("LearnSkill", 11, "Cloning")
-                    Target:FireServer("LearnSkill", 11, "Light Grenade")
-                    Target:FireServer("LearnSkill", 11, "Special Beam Cannon")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab1:AddToggle({
-	Name = "Beerus",
-	Default = false,
-    Save = true,
-    Flag = "Beerus",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 12, "Ki Blast")
-                    Target:FireServer("LearnSkill", 12, "Cataclysmic Orb")
-                    Target:FireServer("LearnSkill", 12, "God Meteor")
-                    Target:FireServer("LearnSkill", 12, "Super Star Break")
-                    Target:FireServer("LearnSkill", 12, "God of Destruction")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab2:AddToggle({
-	Name = "Tanjiro",
-	Default = false,
-    Save = true,
-    Flag = "Tanjiro",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 13, "Water Slash")
-                    Target:FireServer("LearnSkill", 13, "Water Wheel")
-                    Target:FireServer("LearnSkill", 13, "Whirpool")
-                    Target:FireServer("LearnSkill", 13, "Flowing Dance")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab2:AddToggle({
-	Name = "Nezuko",
-	Default = false,
-    Save = true,
-    Flag = "Nezuko",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 14, "Spin Kick")
-                    Target:FireServer("LearnSkill", 14, "Drop Kick")
-                    Target:FireServer("LearnSkill", 14, "Fiery Slash")
-                    Target:FireServer("LearnSkill", 14, "Heel Bash")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab2:AddToggle({
-	Name = "Zenitsu",
-	Default = false,
-    Save = true,
-    Flag = "Zenitsu",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 15, "Thunderclap")
-                    Target:FireServer("LearnSkill", 15, "Deep Sleep")
-                    Target:FireServer("LearnSkill", 15, "Air Spin")
-                    Target:FireServer("LearnSkill", 15, "Lightspeed Slash")
-                    Target:FireServer("LearnSkill", 15, "Lightning Burst")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab2:AddToggle({
-	Name = "Rengoku",
-	Default = false,
-    Save = true,
-    Flag = "Rengoku",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 16, "Scorching Sun")
-                    Target:FireServer("LearnSkill", 16, "Blazing Universe")
-                    Target:FireServer("LearnSkill", 16, "Flame Tiger")
-                    Target:FireServer("LearnSkill", 16, "Ninth Form: Rengoku")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab2:AddToggle({
-	Name = "Deku",
-	Default = false,
-    Save = true,
-    Flag = "Deku",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 17, "Detroit Smash")
-                    Target:FireServer("LearnSkill", 17, "Delaware Smash")
-                    Target:FireServer("LearnSkill", 17, "Full Cowl")
-                    Target:FireServer("LearnSkill", 17, "Overdrive")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab2:AddToggle({
-	Name = "Todoroki",
-	Default = false,
-    Save = true,
-    Flag = "Todoroki",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 18, "Ice Wall")
-                    Target:FireServer("LearnSkill", 18, "Flame Fist")
-                    Target:FireServer("LearnSkill", 18, "Fire Wall")
-                    Target:FireServer("LearnSkill", 18, "Freezing Heatwave")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab3:AddToggle({
-	Name = "Uraraka",
-	Default = false,
-    Save = true,
-    Flag = "Uraraka",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 19, "Meteor Storm")
-                    Target:FireServer("LearnSkill", 19, "Zero Satellites")
-                    Target:FireServer("LearnSkill", 19, "Comet Home Run")
-                    Target:FireServer("LearnSkill", 19, "Skill Release")
-                    Target:FireServer("LearnSkill", 19, "Gravity Destruction")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab3:AddToggle({
-	Name = "Bakugo",
-	Default = false,
-    Save = true,
-    Flag = "Bakugo",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 20, "Explosive Speed")
-                    Target:FireServer("LearnSkill", 20, "Stun Grenade")
-                    Target:FireServer("LearnSkill", 20, "AP Shot")
-                    Target:FireServer("LearnSkill", 20, "Cluster")
-                    Target:FireServer("LearnSkill", 20, "Howitzer Impact")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab3:AddToggle({
-	Name = "Gon",
-	Default = false,
-    Save = true,
-    Flag = "Gon",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 21, "Enhanced Senses")
-                    Target:FireServer("LearnSkill", 21, "Enhanced Strength")
-                    Target:FireServer("LearnSkill", 21, "Enhanced Speed")
-                    Target:FireServer("LearnSkill", 21, "Enhanced Agility")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab3:AddToggle({
-	Name = "Killua",
-	Default = false,
-    Save = true,
-    Flag = "Killua",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 22, "Lightning Palm")
-                    Target:FireServer("LearnSkill", 22, "Thunderbolt")
-                    Target:FireServer("LearnSkill", 22, "Whirlwind")
-                    Target:FireServer("LearnSkill", 22, "Lightning Speed")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab3:AddToggle({
-	Name = "Genos",
-	Default = false,
-    Save = true,
-    Flag = "Genos",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 23, "Incineration Cannon")
-                    Target:FireServer("LearnSkill", 23, "Lightning Eye")
-                    Target:FireServer("LearnSkill", 23, "Rocket Punch")
-                    Target:FireServer("LearnSkill", 23, "Rocket Stomp")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-Tab3:AddToggle({
-	Name = "John",
-	Default = false,
-    Save = true,
-    Flag = "John",
-	Callback = function(Value)
-        kak = Value
-        if kak then
-            pcall(function ()
-                while kak and task.wait(3) do
-                    local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies
-                    Target:FireServer("LearnSkill", 24, "Incineration Cannon")
-                    Target:FireServer("LearnSkill", 24, "Lightning Eye")
-                    Target:FireServer("LearnSkill", 24, "Rocket Punch")
-                    Target:FireServer("LearnSkill", 24, "Rocket Stomp")
-                    
-                end
-                
-            end)
-        end
-	end    
-})
-
-OrionLib:Init()
+local toggle = sec2:Toggle("Allies Skill Upgrades", false,"AllySkill", function(t)
+    AllySkill = t
+    if AllySkill then
+        spawn(function ()
+        while AllySkill and task.wait(5) do
+            local Target = game:GetService("ReplicatedStorage")["_GAME"]["_MODULES"].Utilities.NetworkUtility.Events.Allies;
+            Target:FireServer("LearnSkill", 1, "Shadow Clone");
+            Target:FireServer("LearnSkill", 1, "Six Paths Mode");
+            Target:FireServer("LearnSkill", 1, "Rasengan");
+            Target:FireServer("LearnSkill", 1, "Rasenshuriken");
+            Target:FireServer("LearnSkill", 1, "Sage Mode");
+            Target:FireServer("LearnSkill", 1, "Baryon Mode");
+            Target:FireServer("LearnSkill", 2, "Sharigan")
+            Target:FireServer("LearnSkill", 2, "Chidori")
+            Target:FireServer("LearnSkill", 2, "Kirin")
+            Target:FireServer("LearnSkill", 2, "Amaterasu")
+            Target:FireServer("LearnSkill", 2, "Indra Mode")
+            Target:FireServer("LearnSkill", 3, "Sage Mode")
+            Target:FireServer("LearnSkill", 3, "Ultimate Rasengan")
+            Target:FireServer("LearnSkill", 3, "Spiraling Flash")
+            Target:FireServer("LearnSkill", 3, "Flying Raijin")
+            Target:FireServer("LearnSkill", 4, "Copy Cat")
+            Target:FireServer("LearnSkill", 4, "Susanoo")
+            Target:FireServer("LearnSkill", 4, "Kamui")
+            Target:FireServer("LearnSkill", 4, "Raikiri")
+            Target:FireServer("LearnSkill", 5, "Pistol")
+            Target:FireServer("LearnSkill", 5, "Bazooka")
+            Target:FireServer("LearnSkill", 5, "Gatling")
+            Target:FireServer("LearnSkill", 5, "Red Hawk")
+            Target:FireServer("LearnSkill", 6, "Rapid Slashes")
+            Target:FireServer("LearnSkill", 6, "Dragon Blaze")
+            Target:FireServer("LearnSkill", 6, "Pound Phoenix")
+            Target:FireServer("LearnSkill", 6, "Dragon Twister")
+            Target:FireServer("LearnSkill", 7, "Diable Kick")
+            Target:FireServer("LearnSkill", 7, "Grill Shot")
+            Target:FireServer("LearnSkill", 7, "Spectre")
+            Target:FireServer("LearnSkill", 7, "Aerial Kick")
+            Target:FireServer("LearnSkill", 8, "Swordsmanship")
+            Target:FireServer("LearnSkill", 8, "Stealth Master")
+            Target:FireServer("LearnSkill", 8, "Double Strike")
+            Target:FireServer("LearnSkill", 8, "Crimson Blade")
+            Target:FireServer("LearnSkill", 8, "Haki")
+            Target:FireServer("LearnSkill", 9, "Solar Flare")
+            Target:FireServer("LearnSkill", 9, "Kamehameha")
+            Target:FireServer("LearnSkill", 9, "Dragon Fist")
+            Target:FireServer("LearnSkill", 9, "Spirit Bomb")
+            Target:FireServer("LearnSkill", 10, "Big Bang Attack")
+            Target:FireServer("LearnSkill", 10, "Final Flash")
+            Target:FireServer("LearnSkill", 10, "Galaxy Breaker")
+            Target:FireServer("LearnSkill", 10, "Final Impact")
+            Target:FireServer("LearnSkill", 10, "Galick Gun")
+            Target:FireServer("LearnSkill", 11, "Scatter Shot")
+            Target:FireServer("LearnSkill", 11, "Cloning")
+            Target:FireServer("LearnSkill", 11, "Light Grenade")
+            Target:FireServer("LearnSkill", 11, "Special Beam Cannon")
+            Target:FireServer("LearnSkill", 12, "Ki Blast")
+            Target:FireServer("LearnSkill", 12, "Cataclysmic Orb")
+            Target:FireServer("LearnSkill", 12, "God Meteor")
+            Target:FireServer("LearnSkill", 12, "Super Star Break")
+            Target:FireServer("LearnSkill", 12, "God of Destruction")
+            Target:FireServer("LearnSkill", 13, "Water Slash")
+            Target:FireServer("LearnSkill", 13, "Water Wheel")
+            Target:FireServer("LearnSkill", 13, "Whirpool")
+            Target:FireServer("LearnSkill", 13, "Flowing Dance")
+            Target:FireServer("LearnSkill", 14, "Spin Kick")
+            Target:FireServer("LearnSkill", 14, "Drop Kick")
+            Target:FireServer("LearnSkill", 14, "Fiery Slash")
+            Target:FireServer("LearnSkill", 14, "Heel Bash")
+            Target:FireServer("LearnSkill", 15, "Thunderclap")
+            Target:FireServer("LearnSkill", 15, "Deep Sleep")
+            Target:FireServer("LearnSkill", 15, "Air Spin")
+            Target:FireServer("LearnSkill", 15, "Lightspeed Slash")
+            Target:FireServer("LearnSkill", 15, "Lightning Burst")
+            Target:FireServer("LearnSkill", 16, "Scorching Sun")
+            Target:FireServer("LearnSkill", 16, "Blazing Universe")
+            Target:FireServer("LearnSkill", 16, "Flame Tiger")
+            Target:FireServer("LearnSkill", 16, "Ninth Form: Rengoku")
+            Target:FireServer("LearnSkill", 17, "Detroit Smash")
+            Target:FireServer("LearnSkill", 17, "Delaware Smash")
+            Target:FireServer("LearnSkill", 17, "Full Cowl")
+            Target:FireServer("LearnSkill", 17, "Overdrive")
+            Target:FireServer("LearnSkill", 18, "Ice Wall")
+            Target:FireServer("LearnSkill", 18, "Flame Fist")
+            Target:FireServer("LearnSkill", 18, "Fire Wall")
+            Target:FireServer("LearnSkill", 18, "Freezing Heatwave")
+            Target:FireServer("LearnSkill", 19, "Meteor Storm")
+            Target:FireServer("LearnSkill", 19, "Zero Satellites")
+            Target:FireServer("LearnSkill", 19, "Comet Home Run")
+            Target:FireServer("LearnSkill", 19, "Skill Release")
+            Target:FireServer("LearnSkill", 19, "Gravity Destruction")
+            Target:FireServer("LearnSkill", 20, "Explosive Speed")
+            Target:FireServer("LearnSkill", 20, "Stun Grenade")
+            Target:FireServer("LearnSkill", 20, "AP Shot")
+            Target:FireServer("LearnSkill", 20, "Cluster")
+            Target:FireServer("LearnSkill", 20, "Howitzer Impact")
+            Target:FireServer("LearnSkill", 21, "Enhanced Senses")
+            Target:FireServer("LearnSkill", 21, "Enhanced Strength")
+            Target:FireServer("LearnSkill", 21, "Enhanced Speed")
+            Target:FireServer("LearnSkill", 21, "Enhanced Agility")
+            Target:FireServer("LearnSkill", 22, "Lightning Palm")
+            Target:FireServer("LearnSkill", 22, "Thunderbolt")
+            Target:FireServer("LearnSkill", 22, "Whirlwind")
+            Target:FireServer("LearnSkill", 22, "Lightning Speed")
+            Target:FireServer("LearnSkill", 23, "Incineration Cannon")
+            Target:FireServer("LearnSkill", 23, "Lightning Eye")
+            Target:FireServer("LearnSkill", 23, "Rocket Punch")
+            Target:FireServer("LearnSkill", 23, "Rocket Stomp")
+            Target:FireServer("LearnSkill", 24, "Incineration Cannon")
+            Target:FireServer("LearnSkill", 24, "Lightning Eye")
+            Target:FireServer("LearnSkill", 24, "Rocket Punch")
+            Target:FireServer("LearnSkill", 24, "Rocket Stomp")
+            end
+        end)
+    end
+end)
